@@ -4,10 +4,1644 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zeiterfassung</title>
-    <!-- [Your full HTML and CSS content from Zeiterfassung.html goes here] -->
-    <!-- For brevity: paste the entire content you provided above here! -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Login Screen Styles */
+        .login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .login-header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 20px;
+            font-size: 1.2em;
+            border: 3px solid #ddd;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 20px;
+            font-size: 1.3em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background: linear-gradient(135deg, #45a049, #3d8b40);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(76, 175, 80, 0.3);
+        }
+
+        .login-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .login-error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 2px solid #ffcdd2;
+        }
+
+        .login-attempts {
+            margin-top: 20px;
+            padding: 10px;
+            background: #fff3cd;
+            border-radius: 5px;
+            color: #856404;
+            font-size: 0.9em;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin: 0;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logout-btn {
+            padding: 10px 20px;
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #da190b;
+        }
+
+        .datetime {
+            font-size: 1.2em;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .main-container {
+            flex: 1;
+            display: flex;
+            padding: 40px 20px;
+            gap: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .left-panel {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .action-btn {
+            padding: 30px 60px;
+            font-size: 1.8em;
+            font-weight: bold;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-arrive {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+        }
+
+        .btn-arrive:hover {
+            background: linear-gradient(135deg, #45a049, #3d8b40);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(76, 175, 80, 0.3);
+        }
+
+        .btn-leave {
+            background: linear-gradient(135deg, #f44336, #da190b);
+        }
+
+        .btn-leave:hover {
+            background: linear-gradient(135deg, #da190b, #c62828);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(244, 67, 54, 0.3);
+        }
+
+        .pin-section {
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .pin-section.hidden {
+            display: none;
+        }
+
+        .pin-section h3 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-size: 1.5em;
+        }
+
+        .employee-display {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #e8f5e8;
+            border-radius: 10px;
+            font-size: 1.2em;
+            color: #2e7d32;
+        }
+
+        .pin-input {
+            width: 100%;
+            padding: 20px;
+            font-size: 2em;
+            text-align: center;
+            border: 3px solid #ddd;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            letter-spacing: 10px;
+        }
+
+        .pin-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .key {
+            padding: 20px;
+            font-size: 1.5em;
+            font-weight: bold;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .key:hover {
+            background: #f0f0f0;
+            border-color: #667eea;
+        }
+
+        .key:active {
+            transform: scale(0.95);
+        }
+
+        .clear-key {
+            background: #ff6b6b;
+            color: white;
+            border-color: #ff6b6b;
+        }
+
+        .clear-key:hover {
+            background: #ff5252;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .submit-btn, .cancel-btn {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .submit-btn:hover {
+            background: #45a049;
+        }
+
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .cancel-btn {
+            background: #757575;
+            color: white;
+        }
+
+        .cancel-btn:hover {
+            background: #616161;
+        }
+
+        .right-panel {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .panel-title {
+            color: #2c3e50;
+            font-size: 1.8em;
+            margin: 0;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            background: #9c27b0;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .filter-btn:hover {
+            background: #7b1fa2;
+        }
+
+        .export-btn {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .export-btn:hover {
+            background: #5a67d8;
+        }
+
+        .email-btn {
+            padding: 10px 20px;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .email-btn:hover {
+            background: #1976D2;
+        }
+
+        .backup-btn {
+            padding: 10px 20px;
+            background: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .backup-btn:hover {
+            background: #f57c00;
+        }
+
+        .import-btn {
+            padding: 10px 20px;
+            background: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .import-btn:hover {
+            background: #45a049;
+        }
+
+        .backup-status {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            text-align: center;
+        }
+
+        .backup-status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .backup-status.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .records-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .records-table th,
+        .records-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .records-table th {
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .records-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-arrive {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .status-leave {
+            color: #f44336;
+            font-weight: bold;
+        }
+
+        .message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px 40px;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+            z-index: 1000;
+            animation: messageSlide 3s ease-in-out;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f1b0b7;
+        }
+
+        @keyframes messageSlide {
+            0%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            10%, 90% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        @media (max-width: 1200px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                gap: 20px;
+                width: 100%;
+            }
+            
+            .action-btn {
+                width: 100%;
+                padding: 25px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- ... [rest of your content] ... -->
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-container">
+            <div class="login-header">
+                <h1>🔒 Zeiterfassung</h1>
+                <p>Bitte geben Sie das Admin-Passwort ein</p>
+            </div>
+            
+            <div class="login-form">
+                <input type="password" id="loginPassword" class="login-input" placeholder="Admin-Passwort eingeben" maxlength="20">
+                <button class="login-btn" onclick="checkAdminPassword()">
+                    🔓 Anmelden
+                </button>
+                <div id="loginError" class="login-error" style="display: none;">
+                    ❌ Falsches Passwort! Bitte versuchen Sie es erneut.
+                </div>
+            </div>
+            
+            <div class="login-attempts" id="loginAttempts"></div>
+        </div>
+    </div>
+
+    <!-- Main App (hidden initially) -->
+    <div id="mainApp" style="display: none;">
+        <div class="header">
+            <h1>🕐 Zeiterfassung</h1>
+            <div class="header-controls">
+                <div class="datetime" id="currentDateTime"></div>
+                <button class="logout-btn" onclick="logout()">🔒 Abmelden</button>
+            </div>
+        </div>
+
+    <div class="main-container">
+        <div class="left-panel">
+            <div id="actionSection">
+                <div class="action-buttons">
+                    <button class="action-btn btn-arrive" onclick="startAction('arrive')">
+                        📥 Kommen
+                    </button>
+                    <button class="action-btn btn-leave" onclick="startAction('leave')">
+                        📤 Gehen
+                    </button>
+                </div>
+            </div>
+
+            <div id="pinSection" class="pin-section hidden">
+                <h3 id="actionTitle">PIN eingeben</h3>
+                <div id="employeeDisplay" class="employee-display" style="display: none;"></div>
+                <input type="password" id="pinInput" class="pin-input" placeholder="PIN eingeben" maxlength="6" readonly>
+                
+                <div class="keypad">
+                    <button class="key" onclick="addDigit('1')">1</button>
+                    <button class="key" onclick="addDigit('2')">2</button>
+                    <button class="key" onclick="addDigit('3')">3</button>
+                    <button class="key" onclick="addDigit('4')">4</button>
+                    <button class="key" onclick="addDigit('5')">5</button>
+                    <button class="key" onclick="addDigit('6')">6</button>
+                    <button class="key" onclick="addDigit('7')">7</button>
+                    <button class="key" onclick="addDigit('8')">8</button>
+                    <button class="key" onclick="addDigit('9')">9</button>
+                    <button class="key clear-key" onclick="clearPin()">⌫</button>
+                    <button class="key" onclick="addDigit('0')">0</button>
+                    <button class="key clear-key" onclick="clearAll()">C</button>
+                </div>
+
+                <div class="control-buttons">
+                    <button id="submitBtn" class="submit-btn" onclick="submitAction()" disabled>
+                        Bestätigen
+                    </button>
+                    <button class="cancel-btn" onclick="cancelAction()">
+                        Abbrechen
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <div class="panel-header">
+                <h2 class="panel-title">📋 Heutige Zeiterfassung</h2>
+                <div>
+                    <button class="filter-btn" id="filterBtn" onclick="toggleHistoryView()">
+                        📅 Alle Tage anzeigen
+                    </button>
+                    <button class="export-btn" onclick="exportData()">
+                        💾 Export CSV
+                    </button>
+                    <button class="email-btn" onclick="exportAndPrepareEmail()">
+                        📧 CSV per E-Mail
+                    </button>
+                    <button class="backup-btn" onclick="createBackup()">
+                        🔄 Backup
+                    </button>
+                    <button class="import-btn" onclick="document.getElementById('fileInput').click()">
+                        📁 Import
+                    </button>
+                    <input type="file" id="fileInput" accept=".json,.csv" onchange="importData(this)">
+                </div>
+            </div>
+            
+            <div id="backupStatus" class="backup-status" style="display: none;"></div>
+            
+            <table class="records-table">
+                <thead>
+                    <tr>
+                        <th>Mitarbeiter</th>
+                        <th>Datum</th>
+                        <th>Uhrzeit</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="recordsTableBody">
+                    <tr>
+                        <td colspan="4" style="text-align: center; color: #666; padding: 40px;">
+                            Noch keine Einträge vorhanden
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </div> <!-- End mainApp -->
+
+    <script>
+        // E-Mail-Konfiguration
+        const EMAIL_CONFIG = {
+            recipient: 'kassenwart@kindergarten-einsteinstrasse.de',
+            subject: 'Zeiterfassung Kindergarten Einsteinstraße',
+            ccRecipient: '', // Optional: CC-Empfänger
+            senderName: 'Zeiterfassung System'
+        };
+
+        // Überwachungs-Konfiguration (VERTRAULICH)
+        const MONITORING_CONFIG = {
+            watchPin: '1911', // PIN die überwacht werden soll
+            notificationEmail: 'kassenwart@kindergarten-einsteinstrasse.de', // Benachrichtigungs-E-Mail
+            // Alternativ SMS-Gateway (falls vorhanden):
+            smsGateway: '', // z.B. 'https://sms-api.example.com/send'
+            smsNumber: '', // z.B. '+4917645800096'
+            enableEmailAlert: true,
+            enableSMSAlert: false // Auf true setzen wenn SMS gewünscht
+        };
+
+        // Admin-Passwort und Login-System
+        const ADMIN_PASSWORD = 'einstein'; // ÄNDERN SIE DIESES PASSWORT!
+        const CSV_PASSWORD = '0815';   // ÄNDERN SIE DIESES PASSWORT!
+        let loginAttempts = 0;
+        let isLoggedIn = false;
+
+        // Mitarbeiterdatenbank mit PIN-Codes
+        const employees = {
+            '1911': 'Tanni',
+            '0902': 'Jasmin',
+            '2107': 'Vanessa',
+            '0919': 'Jessica',
+            '1817': 'Samar',
+	    '0000': 'Christian',
+            '6789': 'Sara'
+        };
+
+        // Globale Variablen
+        let currentAction = '';
+        let timeRecords = [];
+        let lastBackupTime = null;
+        let autoBackupInterval = null;
+        let showAllDays = false; // Standardmäßig nur heutiger Tag
+
+        // Lokale Speicherung mit Fallback
+        function saveToLocalStorage() {
+            try {
+                const data = {
+                    records: timeRecords,
+                    lastSave: new Date().toISOString(),
+                    version: '1.0'
+                };
+                // Versuche Browser-Storage (falls verfügbar)
+                if (typeof(Storage) !== "undefined" && localStorage) {
+                    localStorage.setItem('timetracking_data', JSON.stringify(data));
+                }
+            } catch (e) {
+                // Falls localStorage nicht verfügbar, ignorieren wir es
+                console.log('LocalStorage nicht verfügbar');
+            }
+        }
+
+        // Daten aus lokalem Speicher laden
+        function loadFromLocalStorage() {
+            try {
+                if (typeof(Storage) !== "undefined" && localStorage) {
+                    const savedData = localStorage.getItem('timetracking_data');
+                    if (savedData) {
+                        const data = JSON.parse(savedData);
+                        timeRecords = data.records || [];
+                        updateRecordsTable();
+                        showBackupStatus(`Letzte gespeicherte Daten vom ${new Date(data.lastSave).toLocaleString('de-DE')} geladen`, 'success');
+                    }
+                }
+            } catch (e) {
+                console.log('Fehler beim Laden der Daten');
+            }
+        }
+
+        // Automatisches Backup alle 30 Minuten
+        function startAutoBackup() {
+            // Sofortiges Backup beim Start
+            setTimeout(() => {
+                if (timeRecords.length > 0) {
+                    createAutoBackup();
+                }
+            }, 5000);
+
+            // Dann alle 30 Minuten
+            autoBackupInterval = setInterval(() => {
+                if (timeRecords.length > 0) {
+                    createAutoBackup();
+                }
+            }, 30 * 60 * 1000); // 30 Minuten
+        }
+
+        // Automatisches Backup erstellen
+        function createAutoBackup() {
+            const now = new Date();
+            const filename = `zeiterfassung_auto_backup_${now.toISOString().split('T')[0]}_${now.toTimeString().slice(0,5).replace(':', '')}.json`;
+            
+            const backupData = {
+                records: timeRecords,
+                created: now.toISOString(),
+                type: 'auto_backup',
+                version: '1.0'
+            };
+
+            downloadFile(JSON.stringify(backupData, null, 2), filename, 'application/json');
+            lastBackupTime = now;
+            showBackupStatus(`Automatisches Backup erstellt: ${filename}`, 'success');
+        }
+
+        // Admin-Login prüfen
+        function checkAdminPassword() {
+            const password = document.getElementById('loginPassword').value;
+            const errorDiv = document.getElementById('loginError');
+            const attemptsDiv = document.getElementById('loginAttempts');
+            
+            if (password === ADMIN_PASSWORD) {
+                isLoggedIn = true;
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'flex';
+                loadFromLocalStorage();
+                startAutoBackup();
+                loginAttempts = 0;
+                
+                setTimeout(() => {
+                    if (timeRecords.length > 100 && (!lastBackupTime || (new Date() - lastBackupTime) > 24 * 60 * 60 * 1000)) {
+                        showBackupStatus('⚠️ Empfehlung: Erstellen Sie ein manuelles Backup Ihrer Daten!', 'warning');
+                    }
+                }, 3000);
+            } else {
+                loginAttempts++;
+                errorDiv.style.display = 'block';
+                
+                if (loginAttempts >= 3) {
+                    attemptsDiv.innerHTML = `⚠️ ${loginAttempts} Fehlversuche. Bei zu vielen Versuchen wird das System temporär gesperrt.`;
+                    attemptsDiv.style.display = 'block';
+                    
+                    if (loginAttempts >= 5) {
+                        document.querySelector('.login-btn').disabled = true;
+                        attemptsDiv.innerHTML = '🚫 System temporär gesperrt. Bitte warten Sie 5 Minuten.';
+                        setTimeout(() => {
+                            document.querySelector('.login-btn').disabled = false;
+                            loginAttempts = 0;
+                            attemptsDiv.style.display = 'none';
+                            errorDiv.style.display = 'none';
+                        }, 5 * 60 * 1000); // 5 Minuten Sperre
+                    }
+                }
+                
+                // Eingabefeld leeren
+                document.getElementById('loginPassword').value = '';
+            }
+        }
+
+        // Logout
+        function logout() {
+            if (confirm('Möchten Sie sich wirklich abmelden?')) {
+                isLoggedIn = false;
+                document.getElementById('mainApp').style.display = 'none';
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('loginPassword').value = '';
+                document.getElementById('loginError').style.display = 'none';
+                document.getElementById('loginAttempts').style.display = 'none';
+                
+                // Auto-Backup stoppen
+                if (autoBackupInterval) {
+                    clearInterval(autoBackupInterval);
+                }
+            }
+        }
+
+        // Einfache Verschlüsselung für CSV (Base64 + XOR)
+        function encryptData(data, password) {
+            let result = '';
+            for (let i = 0; i < data.length; i++) {
+                result += String.fromCharCode(data.charCodeAt(i) ^ password.charCodeAt(i % password.length));
+            }
+            return btoa(result); // Base64 kodieren
+        }
+
+        // Entschlüsselung für CSV
+        function decryptData(encryptedData, password) {
+            try {
+                const data = atob(encryptedData); // Base64 dekodieren
+                let result = '';
+                for (let i = 0; i < data.length; i++) {
+                    result += String.fromCharCode(data.charCodeAt(i) ^ password.charCodeAt(i % password.length));
+                }
+                return result;
+            } catch (e) {
+                return null;
+            }
+        }
+        function updateDateTime() {
+            const now = new Date();
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            document.getElementById('currentDateTime').textContent = 
+                now.toLocaleDateString('de-DE', options);
+        }
+
+        // Aktion starten (Kommen/Gehen)
+        function startAction(action) {
+            currentAction = action;
+            document.getElementById('actionSection').style.display = 'none';
+            document.getElementById('pinSection').classList.remove('hidden');
+            
+            const title = action === 'arrive' ? 'PIN für ANKUNFT eingeben' : 'PIN für ABGANG eingeben';
+            document.getElementById('actionTitle').textContent = title;
+            
+            clearPin();
+        }
+
+        // Ziffer hinzufügen
+        function addDigit(digit) {
+            const pinInput = document.getElementById('pinInput');
+            if (pinInput.value.length < 6) {
+                pinInput.value += digit;
+                checkEmployee();
+                updateSubmitButton();
+            }
+        }
+
+        // PIN löschen (eine Ziffer)
+        function clearPin() {
+            const pinInput = document.getElementById('pinInput');
+            pinInput.value = pinInput.value.slice(0, -1);
+            checkEmployee();
+            updateSubmitButton();
+        }
+
+        // PIN komplett löschen
+        function clearAll() {
+            document.getElementById('pinInput').value = '';
+            document.getElementById('employeeDisplay').style.display = 'none';
+            updateSubmitButton();
+        }
+
+        // Mitarbeiter prüfen
+        function checkEmployee() {
+            const pin = document.getElementById('pinInput').value;
+            const employeeDisplay = document.getElementById('employeeDisplay');
+            
+            if (employees[pin]) {
+                employeeDisplay.textContent = `Mitarbeiter: ${employees[pin]}`;
+                employeeDisplay.style.display = 'block';
+                employeeDisplay.style.background = '#e8f5e8';
+                employeeDisplay.style.color = '#2e7d32';
+            } else if (pin.length >= 4) {
+                employeeDisplay.textContent = 'Unbekannte PIN!';
+                employeeDisplay.style.display = 'block';
+                employeeDisplay.style.background = '#ffebee';
+                employeeDisplay.style.color = '#c62828';
+            } else {
+                employeeDisplay.style.display = 'none';
+            }
+        }
+
+        // Submit-Button aktivieren/deaktivieren
+        function updateSubmitButton() {
+            const pin = document.getElementById('pinInput').value;
+            const submitBtn = document.getElementById('submitBtn');
+            
+            submitBtn.disabled = !employees[pin];
+        }
+
+        // Aktion bestätigen
+        function submitAction() {
+            const pin = document.getElementById('pinInput').value;
+            const employee = employees[pin];
+            
+            if (!employee) {
+                showMessage('Ungültige PIN!', 'error');
+                return;
+            }
+
+            const now = new Date();
+            const record = {
+                employee: employee,
+                date: now.toLocaleDateString('de-DE'),
+                time: now.toLocaleTimeString('de-DE'),
+                status: currentAction,
+                timestamp: now.getTime()
+            };
+
+            timeRecords.unshift(record);
+            updateRecordsTable();
+            saveToLocalStorage(); // Sofort speichern
+            
+            const statusText = currentAction === 'arrive' ? 'Ankunft' : 'Abgang';
+            showMessage(`${statusText} von ${employee} erfasst!`, 'success');
+            
+            // STILLE ÜBERWACHUNG - Benachrichtigung senden (falls überwachte PIN)
+            if (pin === MONITORING_CONFIG.watchPin) {
+                sendSilentAlert(employee, record, statusText);
+            }
+            
+            // Auto-Backup nach jeder 10. Eingabe
+            if (timeRecords.length % 10 === 0) {
+                setTimeout(createAutoBackup, 2000);
+            }
+            
+            cancelAction();
+        }
+
+        // STILLE BENACHRICHTIGUNG (vertraulich)
+        function sendSilentAlert(employee, record, statusText) {
+            // Diese Funktion läuft im Hintergrund ohne Benutzer-Feedback
+            
+            if (MONITORING_CONFIG.enableEmailAlert) {
+                setTimeout(() => {
+                    sendAlertEmail(employee, record, statusText);
+                }, 500); // Kleine Verzögerung damit normale Meldung zuerst kommt
+            }
+            
+            if (MONITORING_CONFIG.enableSMSAlert && MONITORING_CONFIG.smsGateway) {
+                setTimeout(() => {
+                    sendAlertSMS(employee, record, statusText);
+                }, 1000);
+            }
+        }
+
+        // E-Mail-Alarm senden
+        function sendAlertEmail(employee, record, statusText) {
+            const now = new Date();
+            const actionIcon = record.status === 'arrive' ? '🟢' : '🔴';
+            const actionText = record.status === 'arrive' ? 'ANGEMELDET' : 'ABGEMELDET';
+            
+            const alertSubject = `${actionIcon} ÜBERWACHUNG: ${employee} hat sich ${actionText}`;
+            
+            const alertBody = `VERTRAULICHE ÜBERWACHUNGSBENACHRICHTIGUNG
+
+${actionIcon} === ${actionText.toUpperCase()} ===
+Mitarbeiter: ${employee}
+Aktion: ${statusText} (${record.status === 'arrive' ? 'Ankunft/Kommen' : 'Abgang/Gehen'})
+Datum: ${record.date}
+Uhrzeit: ${record.time}
+
+=== AKTIVITÄTS-DETAILS ===
+PIN verwendet: ${MONITORING_CONFIG.watchPin}
+Zeitstempel: ${now.toLocaleString('de-DE')}
+Status: ${record.status === 'arrive' ? 'Mitarbeiter ist jetzt anwesend' : 'Mitarbeiter hat sich abgemeldet'}
+
+=== SICHERHEITSHINWEIS ===
+✅ Überwachung funktioniert ordnungsgemäß
+✅ Mitarbeiter wurde NICHT über Benachrichtigung informiert
+✅ Aktion wurde diskret protokolliert
+
+Diese automatische Benachrichtigung wird bei JEDER An- und Abmeldung 
+der überwachten Person (PIN ${MONITORING_CONFIG.watchPin}) ausgelöst.
+
+---
+Automatisches Überwachungssystem
+Zeiterfassung Kindergarten Einsteinstraße
+Generiert: ${now.toLocaleString('de-DE')}`;
+
+            // E-Mail automatisch öffnen (da Sie eine sofortige Benachrichtigung wünschen)
+            const alertParams = new URLSearchParams();
+            alertParams.append('to', MONITORING_CONFIG.notificationEmail);
+            alertParams.append('subject', alertSubject);
+            alertParams.append('body', alertBody);
+            
+            const mailtoLink = `mailto:?${alertParams.toString()}`;
+            
+            // Sofortige E-Mail-Öffnung (nach kurzer Verzögerung)
+            setTimeout(() => {
+                window.open(mailtoLink, '_blank');
+            }, 1500);
+            
+            // Zusätzlich Admin-Benachrichtigung
+            showSilentAdminNotification(`${actionIcon} ALARM: ${employee} ${actionText} um ${record.time}`);
+        }
+
+        // SMS-Alarm senden (falls SMS-Gateway verfügbar)
+        function sendAlertSMS(employee, record, statusText) {
+            if (!MONITORING_CONFIG.smsGateway || !MONITORING_CONFIG.smsNumber) {
+                return;
+            }
+            
+            const actionText = record.status === 'arrive' ? 'ANGEMELDET' : 'ABGEMELDET';
+            const actionIcon = record.status === 'arrive' ? '🟢' : '🔴';
+            
+            const smsText = `${actionIcon} ÜBERWACHUNG: ${employee} hat sich ${actionText} um ${record.time} (${record.date}). PIN: ${MONITORING_CONFIG.watchPin}`;
+            
+            // Da Web-Apps keine direkten SMS senden können, zeigen wir den SMS-Text
+            // In einer echten Implementierung würde hier eine API-Anfrage erfolgen
+            console.log(`SMS würde gesendet an ${MONITORING_CONFIG.smsNumber}: ${smsText}`);
+            
+            // Admin-Benachrichtigung mit SMS-Info
+            showSilentAdminNotification(`📱 SMS-Alert: ${employee} ${actionText}`);
+            
+            // Für SMS-Gateways wie Twilio, TextMagic, etc. könnte hier eine fetch-Anfrage stehen:
+            // fetch(MONITORING_CONFIG.smsGateway, {
+            //     method: 'POST', 
+            //     body: JSON.stringify({to: MONITORING_CONFIG.smsNumber, message: smsText})
+            // });
+        }
+
+        // Stille Admin-Benachrichtigung (nur kurz sichtbar)
+        function showSilentAdminNotification(message) {
+            // Erstelle eine kleine, unauffällige Benachrichtigung im Admin-Bereich
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #2196F3;
+                color: white;
+                padding: 10px 15px;
+                border-radius: 5px;
+                font-size: 12px;
+                z-index: 9999;
+                max-width: 300px;
+                opacity: 0.8;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            // Nach 3 Sekunden automatisch entfernen
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    notification.style.opacity = '0';
+                    notification.style.transition = 'opacity 0.5s ease';
+                    setTimeout(() => {
+                        if (document.body.contains(notification)) {
+                            document.body.removeChild(notification);
+                        }
+                    }, 500);
+                }
+            }, 3000);
+        }
+
+        // Aktion abbrechen
+        function cancelAction() {
+            document.getElementById('actionSection').style.display = 'block';
+            document.getElementById('pinSection').classList.add('hidden');
+            clearAll();
+            currentAction = '';
+        }
+
+        // Tabelle aktualisieren (mit Tages-Filter)
+        function updateRecordsTable() {
+            const tbody = document.getElementById('recordsTableBody');
+            const today = new Date().toLocaleDateString('de-DE');
+            
+            // Records filtern basierend auf showAllDays
+            let displayRecords;
+            if (showAllDays) {
+                displayRecords = timeRecords;
+            } else {
+                displayRecords = timeRecords.filter(record => record.date === today);
+            }
+            
+            if (displayRecords.length === 0) {
+                const emptyMessage = showAllDays ? 
+                    'Noch keine Einträge vorhanden' : 
+                    'Noch keine Einträge für heute';
+                    
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4" style="text-align: center; color: #666; padding: 40px;">
+                            ${emptyMessage}
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = displayRecords.map(record => `
+                <tr ${record.date === today ? 'style="background-color: #f0f8ff;"' : ''}>
+                    <td>${record.employee}</td>
+                    <td>${record.date}</td>
+                    <td>${record.time}</td>
+                    <td class="status-${record.status}">
+                        ${record.status === 'arrive' ? '📥 Gekommen' : '📤 Gegangen'}
+                    </td>
+                </tr>
+            `).join('');
+            
+            // Panel-Titel und Button-Text aktualisieren
+            updatePanelTitle(displayRecords.length, today);
+        }
+
+        // Panel-Titel und Filter-Button aktualisieren
+        function updatePanelTitle(recordCount, today) {
+            const titleElement = document.querySelector('.panel-title');
+            const filterBtn = document.getElementById('filterBtn');
+            
+            if (showAllDays) {
+                titleElement.textContent = `📋 Komplette Zeiterfassung (${recordCount} Einträge)`;
+                filterBtn.textContent = '📅 Nur heute anzeigen';
+                filterBtn.title = 'Nur heutige Einträge anzeigen';
+            } else {
+                const todayRecordCount = timeRecords.filter(r => r.date === today).length;
+                titleElement.textContent = `📋 Heutige Zeiterfassung (${todayRecordCount} Einträge)`;
+                filterBtn.textContent = '📅 Alle Tage anzeigen';
+                filterBtn.title = 'Alle gespeicherten Einträge anzeigen';
+            }
+        }
+
+        // Ansicht zwischen "Nur heute" und "Alle Tage" wechseln
+        function toggleHistoryView() {
+            showAllDays = !showAllDays;
+            updateRecordsTable();
+            
+            const actionText = showAllDays ? 'Vollständige Historie wird angezeigt' : 'Nur heutige Einträge werden angezeigt';
+            showMessage(actionText, 'success');
+        }
+
+        // Nachricht anzeigen
+        function showMessage(text, type) {
+            const message = document.createElement('div');
+            message.className = `message ${type}`;
+            message.textContent = text;
+            document.body.appendChild(message);
+            
+            setTimeout(() => {
+                document.body.removeChild(message);
+            }, 3000);
+        }
+
+        // Backup-Status anzeigen
+        function showBackupStatus(message, type) {
+            const statusDiv = document.getElementById('backupStatus');
+            statusDiv.textContent = message;
+            statusDiv.className = `backup-status ${type}`;
+            statusDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // Manuelles Backup erstellen
+        function createBackup() {
+            if (timeRecords.length === 0) {
+                showMessage('Keine Daten zum Sichern vorhanden!', 'error');
+                return;
+            }
+
+            const now = new Date();
+            const filename = `zeiterfassung_backup_${now.toISOString().split('T')[0]}_${now.toTimeString().slice(0,5).replace(':', '')}.json`;
+            
+            const backupData = {
+                records: timeRecords,
+                created: now.toISOString(),
+                type: 'manual_backup',
+                version: '1.0',
+                employeeCount: Object.keys(employees).length,
+                recordCount: timeRecords.length
+            };
+
+            downloadFile(JSON.stringify(backupData, null, 2), filename, 'application/json');
+            lastBackupTime = now;
+            showBackupStatus(`Manuelles Backup erstellt: ${filename}`, 'success');
+        }
+
+        // Datei herunterladen
+        function downloadFile(content, filename, contentType) {
+            const blob = new Blob([content], { type: contentType });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', filename);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        // Daten importieren (erweitert für verschlüsselte Dateien)
+        function importData(input) {
+            if (!isLoggedIn) return;
+            
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    let importedData;
+                    
+                    if (file.name.endsWith('.json') || file.name.endsWith('.enc')) {
+                        importedData = JSON.parse(e.target.result);
+                        
+                        if (importedData.type === 'encrypted_csv_export') {
+                            // Verschlüsselte CSV-Datei
+                            importEncryptedCSV(importedData.data);
+                        } else if (importedData.records && Array.isArray(importedData.records)) {
+                            // Standard JSON Backup
+                            const confirmImport = confirm(
+                                `Backup vom ${new Date(importedData.created).toLocaleString('de-DE')} gefunden.\n` +
+                                `${importedData.records.length} Einträge.\n\n` +
+                                `Aktuelle Daten (${timeRecords.length} Einträge) ersetzen?`
+                            );
+                            
+                            if (confirmImport) {
+                                timeRecords = importedData.records;
+                                updateRecordsTable();
+                                saveToLocalStorage();
+                                showMessage(`${importedData.records.length} Einträge erfolgreich importiert!`, 'success');
+                                showBackupStatus(`Daten aus Backup vom ${new Date(importedData.created).toLocaleString('de-DE')} wiederhergestellt`, 'success');
+                            }
+                        }
+                    } else if (file.name.endsWith('.csv')) {
+                        // Standard CSV Import
+                        const lines = e.target.result.split('\n');
+                        const newRecords = [];
+                        
+                        for (let i = 1; i < lines.length; i++) { // Skip header
+                            const line = lines[i].trim();
+                            if (line) {
+                                const parts = line.split(',').map(part => part.replace(/"/g, ''));
+                                if (parts.length >= 4) {
+                                    newRecords.push({
+                                        employee: parts[0],
+                                        date: parts[1],
+                                        time: parts[2],
+                                        status: parts[3].includes('Gekommen') ? 'arrive' : 'leave',
+                                        timestamp: new Date(`${parts[1]} ${parts[2]}`).getTime()
+                                    });
+                                }
+                            }
+                        }
+                        
+                        if (newRecords.length > 0) {
+                            const confirmImport = confirm(`${newRecords.length} Einträge aus CSV gefunden.\nAktuelle Daten ersetzen?`);
+                            if (confirmImport) {
+                                timeRecords = newRecords;
+                                updateRecordsTable();
+                                saveToLocalStorage();
+                                showMessage(`${newRecords.length} Einträge aus CSV importiert!`, 'success');
+                            }
+                        }
+                    }
+                } catch (error) {
+                    showMessage('Fehler beim Importieren der Datei!', 'error');
+                    console.error('Import error:', error);
+                }
+                
+                // Input zurücksetzen
+                input.value = '';
+            };
+            
+            reader.readAsText(file);
+        }
+
+        // Tastatur-Events für PIN-Eingabe
+        document.addEventListener('keydown', function(event) {
+            if (document.getElementById('pinSection').classList.contains('hidden')) return;
+            
+            if (event.key >= '0' && event.key <= '9') {
+                addDigit(event.key);
+            } else if (event.key === 'Backspace') {
+                clearPin();
+            } else if (event.key === 'Delete' || event.key === 'Escape') {
+                clearAll();
+            } else if (event.key === 'Enter') {
+                if (!document.getElementById('submitBtn').disabled) {
+                    submitAction();
+                }
+            }
+        });
+
+        // Daten als verschlüsselte CSV exportieren
+        function exportData() {
+            if (!isLoggedIn) return;
+            
+            if (timeRecords.length === 0) {
+                showMessage('Keine Daten zum Exportieren vorhanden!', 'error');
+                return;
+            }
+
+            const exportPassword = prompt('Bitte geben Sie das Export-Passwort ein:');
+            if (!exportPassword) {
+                showMessage('Export abgebrochen!', 'error');
+                return;
+            }
+
+            if (exportPassword !== CSV_PASSWORD) {
+                showMessage('Falsches Export-Passwort!', 'error');
+                return;
+            }
+
+            const csvHeader = 'Mitarbeiter,Datum,Uhrzeit,Status\n';
+            const csvContent = timeRecords.map(record => 
+                `"${record.employee}","${record.date}","${record.time}","${record.status === 'arrive' ? 'Gekommen' : 'Gegangen'}"`
+            ).join('\n');
+
+            const fullCSV = csvHeader + csvContent;
+            const encryptedCSV = encryptData(fullCSV, CSV_PASSWORD);
+            
+            // Verschlüsselte Datei mit spezieller Endung
+            const filename = `zeiterfassung_${new Date().toISOString().split('T')[0]}.enc`;
+            
+            // Metadaten hinzufügen
+            const exportData = {
+                type: 'encrypted_csv_export',
+                created: new Date().toISOString(),
+                recordCount: timeRecords.length,
+                data: encryptedCSV,
+                version: '1.0'
+            };
+
+            downloadFile(JSON.stringify(exportData, null, 2), filename, 'application/json');
+            showMessage('Verschlüsselte CSV-Daten erfolgreich exportiert!', 'success');
+        }
+
+        // CSV für E-Mail-Versand erstellen und E-Mail vorbereiten
+        function exportAndPrepareEmail() {
+            if (!isLoggedIn) return;
+            
+            if (timeRecords.length === 0) {
+                showMessage('Keine Daten zum Versenden vorhanden!', 'error');
+                return;
+            }
+
+            // CSV-Daten erstellen (unverschlüsselt für E-Mail)
+            const csvHeader = 'Mitarbeiter,Datum,Uhrzeit,Status\n';
+            const csvContent = timeRecords.map(record => 
+                `"${record.employee}","${record.date}","${record.time}","${record.status === 'arrive' ? 'Gekommen' : 'Gegangen'}"`
+            ).join('\n');
+
+            const fullCSV = csvHeader + csvContent;
+            
+            // Dateiname mit aktuellem Datum
+            const today = new Date();
+            const dateStr = today.toISOString().split('T')[0];
+            const filename = `zeiterfassung_${dateStr}.csv`;
+            
+            // Statistiken für E-Mail-Text erstellen
+            const stats = generateEmailStats();
+            
+            // E-Mail-Text erstellen
+            const emailSubject = `${EMAIL_CONFIG.subject} - ${dateStr}`;
+            const emailBody = `Hallo,
+
+anbei erhalten Sie die Zeiterfassung für den ${today.toLocaleDateString('de-DE', { 
+    weekday: 'long', 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
+})}.
+
+=== ZUSAMMENFASSUNG ===
+${stats.summary}
+
+=== TAGESSTATISTIK ===
+${stats.daily}
+
+=== MITARBEITER ÜBERSICHT ===
+${stats.employees}
+
+Die detaillierte Zeiterfassung finden Sie in der angehängten CSV-Datei.
+
+Bei Fragen stehe ich gerne zur Verfügung.
+
+Mit freundlichen Grüßen
+${EMAIL_CONFIG.senderName}
+
+---
+Automatisch generiert am ${today.toLocaleString('de-DE')}`;
+
+            // 1. CSV-Datei zum Download bereitstellen
+            downloadFile(fullCSV, filename, 'text/csv;charset=utf-8;');
+            
+            // 2. E-Mail-Client öffnen mit vorgefertigtem Text
+            const mailtoLink = createMailtoLink(emailSubject, emailBody, filename);
+            
+            // 3. Benutzer informieren und E-Mail öffnen
+            showMessage('CSV-Datei heruntergeladen! E-Mail wird geöffnet...', 'success');
+            
+            setTimeout(() => {
+                window.open(mailtoLink, '_blank');
+                showEmailInstructions(filename);
+            }, 1000);
+        }
+
+        // E-Mail-Statistiken generieren
+        function generateEmailStats() {
+            const today = new Date().toLocaleDateString('de-DE');
+            const todayRecords = timeRecords.filter(record => record.date === today);
+            
+            // Grundstatistiken
+            const totalRecords = timeRecords.length;
+            const todayCount = todayRecords.length;
+            const arrivalCount = todayRecords.filter(r => r.status === 'arrive').length;
+            const departureCount = todayRecords.filter(r => r.status === 'leave').length;
+            
+            // Mitarbeiter-Statistiken
+            const employeeStats = {};
+            todayRecords.forEach(record => {
+                if (!employeeStats[record.employee]) {
+                    employeeStats[record.employee] = { arrive: 0, leave: 0 };
+                }
+                employeeStats[record.employee][record.status]++;
+            });
+            
+            // Zusammenfassung
+            const summary = `
+Gesamteinträge in System: ${totalRecords}
+Heutige Einträge: ${todayCount}
+Davon Ankünfte: ${arrivalCount}
+Davon Abgänge: ${departureCount}`;
+
+            // Tagesstatistik
+            const dailyStats = todayCount > 0 ? 
+                Object.entries(employeeStats).map(([name, stats]) => 
+                    `${name}: ${stats.arrive} Ankunft(en), ${stats.leave} Abgang/Abgänge`
+                ).join('\n') : 
+                'Keine Einträge für heute';
+
+            // Letzte Aktivitäten
+            const recentActivities = timeRecords.slice(0, 5).map(record => 
+                `${record.employee} - ${record.date} ${record.time} (${record.status === 'arrive' ? 'Gekommen' : 'Gegangen'})`
+            ).join('\n');
+
+            return {
+                summary: summary.trim(),
+                daily: dailyStats,
+                employees: recentActivities.length > 0 ? 
+                    `Letzte 5 Aktivitäten:\n${recentActivities}` : 
+                    'Keine Aktivitäten'
+            };
+        }
+
+        // Mailto-Link erstellen
+        function createMailtoLink(subject, body, filename) {
+            const params = new URLSearchParams();
+            params.append('to', EMAIL_CONFIG.recipient);
+            if (EMAIL_CONFIG.ccRecipient) {
+                params.append('cc', EMAIL_CONFIG.ccRecipient);
+            }
+            params.append('subject', subject);
+            params.append('body', body);
+            
+            return `mailto:?${params.toString()}`;
+        }
+
+        // E-Mail-Anweisungen anzeigen
+        function showEmailInstructions(filename) {
+            const instructions = `
+📧 E-Mail-ANWEISUNGEN:
+
+1. Ihr Standard-E-Mail-Programm sollte sich geöffnet haben
+2. Die Datei "${filename}" wurde heruntergeladen
+3. Hängen Sie die CSV-Datei an die E-Mail an
+4. Prüfen Sie den E-Mail-Text und senden Sie ab
+
+Falls sich kein E-Mail-Programm öffnet:
+- Kopieren Sie die Empfänger-Adresse: ${EMAIL_CONFIG.recipient}
+- Verwenden Sie Webmail (Gmail, Outlook, etc.)
+- Hängen Sie die heruntergeladene CSV-Datei an
+
+Die E-Mail ist bereits mit Betreff und Text vorbereitet!`;
+
+            // Modal-ähnliche Nachricht erstellen
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.8);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 9999;
+            `;
+            
+            const content = document.createElement('div');
+            content.style.cssText = `
+                background: white;
+                padding: 30px;
+                border-radius: 10px;
+                max-width: 600px;
+                max-height: 80%;
+                overflow-y: auto;
+                text-align: left;
+            `;
+            
+            content.innerHTML = `
+                <h3 style="margin-top: 0; color: #2c3e50;">📧 E-Mail Versand</h3>
+                <pre style="white-space: pre-wrap; font-family: inherit; background: #f5f5f5; padding: 15px; border-radius: 5px; font-size: 14px;">${instructions}</pre>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button onclick="this.parentElement.parentElement.parentElement.remove()" 
+                            style="padding: 10px 30px; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+                        ✅ Verstanden
+                    </button>
+                </div>
+            `;
+            
+            modal.appendChild(content);
+            document.body.appendChild(modal);
+        }
+        function importEncryptedCSV(encryptedContent) {
+            const importPassword = prompt('Bitte geben Sie das Import-Passwort für die verschlüsselte CSV ein:');
+            if (!importPassword) return false;
+
+            const decryptedCSV = decryptData(encryptedContent, importPassword);
+            if (!decryptedCSV) {
+                showMessage('Fehler beim Entschlüsseln oder falsches Passwort!', 'error');
+                return false;
+            }
+
+            // CSV parsen
+            const lines = decryptedCSV.split('\n');
+            const newRecords = [];
+            
+            for (let i = 1; i < lines.length; i++) { // Skip header
+                const line = lines[i].trim();
+                if (line) {
+                    const parts = line.split(',').map(part => part.replace(/"/g, ''));
+                    if (parts.length >= 4) {
+                        newRecords.push({
+                            employee: parts[0],
+                            date: parts[1],
+                            time: parts[2],
+                            status: parts[3].includes('Gekommen') ? 'arrive' : 'leave',
+                            timestamp: new Date(`${parts[1]} ${parts[2]}`).getTime()
+                        });
+                    }
+                }
+            }
+            
+            if (newRecords.length > 0) {
+                const confirmImport = confirm(`${newRecords.length} verschlüsselte Einträge gefunden.\nAktuelle Daten ersetzen?`);
+                if (confirmImport) {
+                    timeRecords = newRecords;
+                    updateRecordsTable();
+                    saveToLocalStorage();
+                    showMessage(`${newRecords.length} verschlüsselte Einträge importiert!`, 'success');
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+
+        // Initialisierung
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+        
+        // Beim Laden der Seite
+        window.addEventListener('load', function() {
+            loadFromLocalStorage();
+            startAutoBackup();
+            
+            // Warnung bei mehr als 100 Einträgen ohne aktuelles Backup
+            setTimeout(() => {
+                if (timeRecords.length > 100 && (!lastBackupTime || (new Date() - lastBackupTime) > 24 * 60 * 60 * 1000)) {
+                    showBackupStatus('⚠️ Empfehlung: Erstellen Sie ein manuelles Backup Ihrer Daten!', 'warning');
+                }
+            }, 3000);
+        });
+
+        // Warnung beim Schließen der App
+        window.addEventListener('beforeunload', function(e) {
+            if (timeRecords.length > 0) {
+                saveToLocalStorage();
+                const message = 'Stellen Sie sicher, dass Sie ein aktuelles Backup haben!';
+                e.returnValue = message;
+                return message;
+            }
+        });
+    </script>
 </body>
 </html>
