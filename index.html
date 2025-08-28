@@ -2,813 +2,252 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Zeiterfassung</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
-
-        /* Login Screen Styles */
-        .login-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 10000;
+            height: 100vh;
+            margin: 0;
+            background-color: #fdfd00;
         }
-
-        .login-container {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        .container {
+            width: 100%;
+            max-width: 768px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            background-color: white;
+            border-radius: 8px;
             text-align: center;
-            width: 90%;
-            max-width: 400px;
         }
-
-        .login-container h2 {
-            margin-bottom: 20px;
+        h1 {
             color: #333;
-            font-size: 2em;
-        }
-
-        .login-container input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 1em;
-            transition: all 0.3s ease;
-        }
-
-        .login-container input:focus {
-            outline: none;
-            border-color: #764ba2;
-            box-shadow: 0 0 5px rgba(118, 75, 162, 0.5);
-        }
-
-        .login-container button {
-            width: 100%;
-            padding: 12px;
-            background-color: #764ba2;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1em;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
-        .login-container button:hover {
-            background-color: #667eea;
-            transform: translateY(-2px);
-        }
-
-        .login-message {
-            margin-top: 15px;
-            color: red;
-            font-weight: bold;
-        }
-
-        /* Main App Styles */
-        .main-container {
-            flex: 1;
-            display: flex;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-            margin: 20px;
-            /* Flex-direction is row by default for desktop */
-            flex-direction: row;
-        }
-
-        /* Sidebar Styles - VERKLEINERT */
-        .sidebar {
-            background-color: #f8f8f8;
-            padding: 20px;
-            border-right: 1px solid #ddd;
-            display: flex;
-            flex-direction: column;
-            width: 200px; /* Verkleinerung der Breite */
-            min-width: 200px; /* Sichert die Breite */
-        }
-
-        /* ... weitere Sidebar-Styles ... */
-
-        /* Main Content Styles */
-        .main-content {
-            flex: 1;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Header Styles */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #ddd;
-            padding-bottom: 10px;
-        }
-
-        .header h1 {
             font-size: 2.5em;
-            color: #444;
         }
-
-        .current-date-time {
-            font-size: 1.2em;
-            color: #777;
+        .login-section, .main-section {
+            padding: 20px;
         }
-
-        /* Form Styles */
-        .form-container {
-            display: flex;
-            gap: 15px;
+        .main-section {
+            display: none;
+        }
+        input[type="password"], input[type="text"] {
+            padding: 15px;
+            font-size: 1.5em;
+            width: 80%;
+            max-width: 300px;
             margin-bottom: 20px;
-            align-items: flex-start;
-            flex-wrap: wrap; /* Erlaubt das Umbrechen von Elementen */
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-            min-width: 150px; /* Stellt sicher, dass Felder nicht zu schmal werden */
-        }
-
-        .form-group label {
-            font-size: 0.9em;
-            color: #555;
-            margin-bottom: 5px;
-        }
-
-        .form-group input, .form-group select {
-            padding: 10px;
             border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 1em;
-            transition: all 0.3s ease;
+            border-radius: 5px;
+            text-align: center;
         }
-
-        .form-group input:focus, .form-group select:focus {
-            outline: none;
-            border-color: #764ba2;
-            box-shadow: 0 0 5px rgba(118, 75, 162, 0.5);
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 25px;
-            flex-wrap: wrap;
-        }
-
-        .action-buttons button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            font-size: 1em;
+        button {
+            padding: 15px 30px;
+            font-size: 1.5em;
             cursor: pointer;
-            transition: background-color 0.3s ease;
-            white-space: nowrap;
-        }
-
-        #startStopBtn {
-            background-color: #4CAF50; /* Green */
+            border: none;
+            border-radius: 5px;
             color: white;
+            margin: 10px;
+            min-width: 150px;
         }
-
-        #startStopBtn.stop {
-            background-color: #f44336; /* Red */
+        #loginButton {
+            background-color: #5687A1;
         }
-
-        #exportBtn {
-            background-color: #2196F3; /* Blue */
-            color: white;
+        #kommenBtn {
+            background-color: #4caf50;
         }
-
-        #importBtn {
-            background-color: #ff9800; /* Orange */
-            color: white;
+        #gehenBtn {
+            background-color: #d86060;
         }
-
-        #clearBtn {
-            background-color: #9E9E9E; /* Grey */
-            color: white;
-        }
-
-        #exportBtn:hover {
-            background-color: #0b7dda;
-        }
-
-        #importBtn:hover {
-            background-color: #e68a00;
-        }
-
-        #clearBtn:hover {
-            background-color: #757575;
-        }
-
-        /* Table Styles */
-        .table-container {
+        #logoutBtn {
+            background-color: #6c757d;
             margin-top: 20px;
-            overflow-x: auto;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
-
-        #recordsTable {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9em;
-            table-layout: fixed; /* Bessere Spaltensteuerung */
+        #exportBtn {
+            background-color: #00796b;
+            margin-top: 20px;
         }
-
-        #recordsTable th, #recordsTable td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-            word-wrap: break-word; /* Verhindert Überlaufen in den Zellen */
-        }
-
-        #recordsTable th {
-            background-color: #f2f2f2;
+        .status-message {
+            margin-top: 20px;
+            font-size: 1.5em;
             color: #555;
-            font-weight: bold;
         }
-
-        #recordsTable tr:hover {
-            background-color: #f5f5f5;
+        .history-section {
+            margin-top: 40px;
+            text-align: left;
         }
-
-        /* Action Buttons in Table */
-        .table-actions {
-            display: flex;
-            gap: 5px;
-        }
-
-        .table-actions button {
-            padding: 5px 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
-
-        .edit-btn {
-            background-color: #5bc0de;
-            color: white;
-        }
-
-        .delete-btn {
-            background-color: #d9534f;
-            color: white;
-        }
-
-        .edit-btn:hover {
-            background-color: #31b0d5;
-        }
-
-        .delete-btn:hover {
-            background-color: #c9302c;
-        }
-
-        /* Popup Message */
-        .popup-message {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            border-radius: 8px;
-            color: white;
-            font-weight: bold;
-            z-index: 1000;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
-            transform: translateY(100px);
-            opacity: 0;
-        }
-
-        .popup-message.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .popup-message.success {
-            background-color: #4CAF50;
-        }
-
-        .popup-message.error {
-            background-color: #f44336;
-        }
-
-        .popup-message.warning {
-            background-color: #ff9800;
-        }
-        
-        /* Media Query für iPad */
-        @media screen and (max-width: 1024px) {
-            body {
-                padding: 10px;
-            }
-            
-            .main-container {
-                flex-direction: column; /* Stapelt die Spalten vertikal */
-                margin: 10px;
-            }
-
-            .sidebar {
-                width: 100%; /* Die Sidebar nimmt die volle Breite ein */
-                min-width: unset;
-                border-right: none;
-                border-bottom: 1px solid #ddd;
-            }
-
-            .header h1 {
-                font-size: 2em;
-            }
-
-            .form-container {
-                flex-direction: column;
-            }
-
-            .form-group {
-                min-width: 100%;
-            }
-
-            .action-buttons {
-                flex-direction: column;
-            }
-            
-            .action-buttons button {
-                width: 100%;
-            }
+        .history-entry {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+            font-size: 1.2em;
         }
     </style>
 </head>
 <body>
-    <div class="login-screen" id="loginScreen">
-        <div class="login-container">
-            <h2>Willkommen</h2>
-            <input type="password" id="passwordInput" placeholder="Passwort eingeben">
-            <button onclick="login()">Anmelden</button>
-            <div class="login-message" id="loginMessage"></div>
+    <div class="container">
+        <div id="loginSection" class="login-section">
+            <h1>Zeiterfassung Login</h1>
+            <p>Bitte geben Sie das Website-Passwort ein:</p>
+            <input type="password" id="websitePassword" placeholder="Passwort">
+            <button id="loginButton">Anmelden</button>
+            <p id="loginStatus" class="status-message"></p>
         </div>
-    </div>
 
-    <div class="main-container" id="mainApp" style="display: none;">
-        <div class="sidebar">
-            <h2>Status</h2>
-            <p id="timeInfo">Ladezeit...</p>
-            <p id="totalTime">Gesamt: 0h 0m</p>
-            <p id="backupStatus">Backup-Status: unbekannt</p>
-            <div class="action-buttons" style="margin-top: auto;">
-                <button id="exportBtn" onclick="exportData()">Exportieren</button>
-                <button id="importBtn" onclick="document.getElementById('fileInput').click()">Importieren</button>
-                <input type="file" id="fileInput" style="display: none;" onchange="importData(event)">
-                <button id="clearBtn" onclick="clearData()">Löschen</button>
-            </div>
-        </div>
-        
-        <div class="main-content">
-            <div class="header">
-                <h1 id="pageTitle">Zeiterfassung</h1>
-                <div class="current-date-time">
-                    <span id="currentDate"></span><br>
-                    <span id="currentTime"></span>
-                </div>
-            </div>
+        <div id="mainSection" class="main-section">
+            <p class="status-message">Bitte geben Sie Ihren 4-stelligen PIN ein.</p>
+            <input type="text" id="userPin" placeholder="4-stelliger PIN" maxlength="4">
+            <button id="kommenBtn">Kommen</button>
+            <button id="gehenBtn">Gehen</button>
+            <p id="logStatus" class="status-message"></p>
             
-            <div class="form-container">
-                <div class="form-group">
-                    <label for="projectSelect">Projekt:</label>
-                    <select id="projectSelect">
-                        <option value="Unbekannt">Unbekannt</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="taskInput">Aufgabe:</label>
-                    <input type="text" id="taskInput" placeholder="Aufgabe (z.B. Meeting)">
-                </div>
-                <div class="form-group">
-                    <label for="notesInput">Notizen:</label>
-                    <input type="text" id="notesInput" placeholder="Notizen (optional)">
-                </div>
+            <div class="history-section">
+                <h2>Historie</h2>
+                <div id="historyList"></div>
             </div>
-
-            <div class="action-buttons">
-                <button id="startStopBtn" onclick="startStopTracking()">Starten</button>
-            </div>
-
-            <div class="table-container">
-                <table id="recordsTable">
-                    <thead>
-                        <tr>
-                            <th>Projekt</th>
-                            <th>Aufgabe</th>
-                            <th>Start</th>
-                            <th>Ende</th>
-                            <th>Dauer</th>
-                            <th>Notizen</th>
-                            <th>Aktionen</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        </tbody>
-                </table>
-            </div>
+            <button id="logoutBtn">Abmelden</button>
+            <button id="exportBtn">CSV exportieren</button>
         </div>
     </div>
-    
-    <div class="popup-message" id="popupMessage"></div>
 
     <script>
-        // JavaScript Code bleibt unverändert
-        let timeRecords = [];
-        let isTracking = false;
-        let trackingStartTime = null;
-        let trackingProjectId = 'Unbekannt';
-        let trackingTask = '';
-        let lastBackupTime = null;
-        const autoBackupKey = 'timeTracker_autoBackup_';
-        
-        // Encryption/Decryption functions (simplified for example)
-        const passwordHashKey = 'ZeiterfassungApp_passwordHash';
+        document.addEventListener('DOMContentLoaded', () => {
+            const websitePasswordInput = document.getElementById('websitePassword');
+            const loginButton = document.getElementById('loginButton');
+            const loginSection = document.getElementById('loginSection');
+            const mainSection = document.getElementById('mainSection');
+            const loginStatus = document.getElementById('loginStatus');
 
-        function sha256(str) {
-            return crypto.subtle.digest('SHA-256', new TextEncoder().encode(str))
-                .then(buf => {
-                    return Array.prototype.map.call(new Uint8Array(buf), x => (('00' + x.toString(16)).slice(-2))).join('');
-                });
-        }
-        
-        function xorEncrypt(text, key) {
-            let encrypted = '';
-            for (let i = 0; i < text.length; i++) {
-                const charCode = text.charCodeAt(i) ^ key.charCodeAt(i % key.length);
-                encrypted += String.fromCharCode(charCode);
-            }
-            return btoa(encrypted); // Base64 encoding
-        }
-        
-        function xorDecrypt(encrypted, key) {
-            try {
-                const decoded = atob(encrypted);
-                let decrypted = '';
-                for (let i = 0; i < decoded.length; i++) {
-                    const charCode = decoded.charCodeAt(i) ^ key.charCodeAt(i % key.length);
-                    decrypted += String.fromCharCode(charCode);
-                }
-                return decrypted;
-            } catch (e) {
-                return null; // Handle potential decryption errors
-            }
-        }
+            const userPinInput = document.getElementById('userPin');
+            const kommenBtn = document.getElementById('kommenBtn');
+            const gehenBtn = document.getElementById('gehenBtn');
+            const logStatus = document.getElementById('logStatus');
+            const historyList = document.getElementById('historyList');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const exportBtn = document.getElementById('exportBtn');
 
-        function login() {
-            const passwordInput = document.getElementById('passwordInput').value;
-            const loginMessage = document.getElementById('loginMessage');
+            const correctWebsitePassword = 'einstein'; 
             
-            if (passwordInput) {
-                sha256(passwordInput).then(hashedPass => {
-                    const storedHash = localStorage.getItem(passwordHashKey);
-                    if (storedHash) {
-                        if (storedHash === hashedPass) {
-                            showApp(passwordInput);
-                        } else {
-                            loginMessage.textContent = 'Falsches Passwort!';
-                        }
-                    } else {
-                        localStorage.setItem(passwordHashKey, hashedPass);
-                        localStorage.setItem('encryptionKey', passwordInput);
-                        showApp(passwordInput);
-                    }
-                });
-            } else {
-                loginMessage.textContent = 'Bitte Passwort eingeben!';
-            }
-        }
-        
-        function showApp(password) {
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('mainApp').style.display = 'flex';
-            localStorage.setItem('encryptionKey', password);
-            loadFromLocalStorage();
-            startAutoBackup();
-        }
-
-        // Functions to show messages
-        function showMessage(message, type = 'info') {
-            const popup = document.getElementById('popupMessage');
-            popup.textContent = message;
-            popup.className = `popup-message show ${type}`;
-            setTimeout(() => {
-                popup.classList.remove('show');
-            }, 3000);
-        }
-        
-        function showBackupStatus(message, type = 'info') {
-            const statusElement = document.getElementById('backupStatus');
-            statusElement.textContent = message;
-            statusElement.className = `backup-status-${type}`;
-        }
-
-        // Auto-Backup
-        function saveToLocalStorage() {
-            const encryptionKey = localStorage.getItem('encryptionKey');
-            if (encryptionKey) {
-                const encryptedRecords = xorEncrypt(JSON.stringify(timeRecords), encryptionKey);
-                localStorage.setItem('timeRecords', encryptedRecords);
-            }
-        }
-
-        function loadFromLocalStorage() {
-            const encryptionKey = localStorage.getItem('encryptionKey');
-            if (!encryptionKey) {
-                return;
-            }
-            const encryptedRecords = localStorage.getItem('timeRecords');
-            if (encryptedRecords) {
-                const decryptedRecords = xorDecrypt(encryptedRecords, encryptionKey);
-                if (decryptedRecords) {
-                    try {
-                        timeRecords = JSON.parse(decryptedRecords);
-                        updateRecordsTable();
-                        calculateTotalTime();
-                    } catch (e) {
-                        showMessage('Daten sind beschädigt oder falsches Passwort!', 'error');
-                        timeRecords = [];
-                    }
-                }
-            }
-        }
-        
-        function startAutoBackup() {
-            const date = new Date();
-            const backupDateKey = autoBackupKey + date.toISOString().slice(0, 10);
-            const lastAutoBackup = localStorage.getItem(backupDateKey);
-
-            if (!lastAutoBackup) {
-                const encryptionKey = localStorage.getItem('encryptionKey');
-                if (encryptionKey) {
-                    const encryptedRecords = xorEncrypt(JSON.stringify(timeRecords), encryptionKey);
-                    localStorage.setItem(backupDateKey, encryptedRecords);
-                    localStorage.setItem('lastBackupTime', new Date().getTime());
-                    lastBackupTime = new Date();
-                    showBackupStatus('✔️ Tägliches Auto-Backup erstellt.');
-                }
-            } else {
-                lastBackupTime = new Date(parseInt(localStorage.getItem('lastBackupTime')));
-                showBackupStatus('✔️ Aktuelles Auto-Backup vorhanden.');
-            }
-        }
-        
-        // Time tracking functions
-        function startStopTracking() {
-            if (isTracking) {
-                stopTracking();
-            } else {
-                startTracking();
-            }
-        }
-
-        function startTracking() {
-            const projectSelect = document.getElementById('projectSelect');
-            const taskInput = document.getElementById('taskInput');
-            
-            trackingStartTime = new Date();
-            trackingProjectId = projectSelect.value;
-            trackingTask = taskInput.value.trim() || 'Keine Aufgabe';
-            isTracking = true;
-            
-            document.getElementById('startStopBtn').textContent = 'Stoppen';
-            document.getElementById('startStopBtn').classList.add('stop');
-            showMessage('Zeiterfassung gestartet!', 'success');
-        }
-
-        function stopTracking() {
-            const endTime = new Date();
-            const durationMs = endTime - trackingStartTime;
-            
-            const newRecord = {
-                id: Date.now(),
-                project: trackingProjectId,
-                task: trackingTask,
-                startTime: trackingStartTime.toISOString(),
-                endTime: endTime.toISOString(),
-                duration: durationMs,
-                notes: document.getElementById('notesInput').value.trim()
+            // Zuordnung von PINs zu Namen
+            const pinToName = {
+                '0000': 'Christian',
+                '2031': 'Tanni',
+                '7955': 'Jasmin',
+		'8787': 'Bettina',
+		'9696': 'Jessica',
+		'7777': 'Samar',
+		'1999': 'Nese',
+		'4444': 'Leonie',
+                '5674': 'Vanessa',
+                // Fügen Sie hier weitere PINs und Namen hinzu
             };
-            
-            timeRecords.push(newRecord);
-            saveToLocalStorage();
-            
-            isTracking = false;
-            trackingStartTime = null;
-            document.getElementById('startStopBtn').textContent = 'Starten';
-            document.getElementById('startStopBtn').classList.remove('stop');
-            
-            updateRecordsTable();
-            calculateTotalTime();
-            showMessage('Zeiterfassung gestoppt!', 'success');
-        }
-        
-        function updateRecordsTable() {
-            const tableBody = document.getElementById('recordsTable').querySelector('tbody');
-            tableBody.innerHTML = '';
-            
-            timeRecords.sort((a, b) => new Date(b.startTime) - new Date(a.startTime));
-            
-            timeRecords.forEach(record => {
-                const row = tableBody.insertRow();
-                const startDate = new Date(record.startTime);
-                const endDate = new Date(record.endTime);
-                
-                const duration = Math.round(record.duration / 60000); // Dauer in Minuten
-                const durationHours = Math.floor(duration / 60);
-                const durationMinutes = duration % 60;
-                
-                row.innerHTML = `
-                    <td>${record.project}</td>
-                    <td>${record.task}</td>
-                    <td>${startDate.toLocaleTimeString('de-DE')}</td>
-                    <td>${endDate.toLocaleTimeString('de-DE')}</td>
-                    <td>${durationHours}h ${durationMinutes}m</td>
-                    <td>${record.notes}</td>
-                    <td>
-                        <div class="table-actions">
-                            <button class="edit-btn" onclick="editRecord(${record.id})">Bearbeiten</button>
-                            <button class="delete-btn" onclick="deleteRecord(${record.id})">Löschen</button>
-                        </div>
-                    </td>
-                `;
+
+            // Funktion zum Speichern der Historie
+            const saveHistory = (pin, type) => {
+                const now = new Date();
+                const name = pinToName[pin] || 'Unbekannt';
+                const log = {
+                    pin: pin,
+                    name: name,
+                    type: type,
+                    timestamp: now.toISOString(),
+                    formattedTime: now.toLocaleString('de-DE', { dateStyle: 'short', timeStyle: 'short' })
+                };
+
+                let history = JSON.parse(localStorage.getItem('timeLogHistory')) || [];
+                history.push(log);
+                localStorage.setItem('timeLogHistory', JSON.stringify(history));
+                displayHistory();
+            };
+
+            // Funktion zum Anzeigen der Historie
+            const displayHistory = () => {
+                const history = JSON.parse(localStorage.getItem('timeLogHistory')) || [];
+                historyList.innerHTML = '';
+                history.forEach(log => {
+                    const entry = document.createElement('div');
+                    entry.classList.add('history-entry');
+                    entry.textContent = `${log.formattedTime} - Name: ${log.name} - Aktion: ${log.type}`;
+                    historyList.prepend(entry);
+                });
+            };
+
+            // Login-Logik
+            loginButton.addEventListener('click', () => {
+                if (websitePasswordInput.value === correctWebsitePassword) {
+                    loginSection.style.display = 'none';
+                    mainSection.style.display = 'block';
+                    displayHistory();
+                } else {
+                    loginStatus.textContent = 'Falsches Passwort.';
+                    loginStatus.style.color = '#dc3545';
+                }
             });
-        }
-        
-        function calculateTotalTime() {
-            const totalDuration = timeRecords.reduce((sum, record) => sum + record.duration, 0);
-            const totalMinutes = Math.round(totalDuration / 60000);
-            const totalHours = Math.floor(totalMinutes / 60);
-            const remainingMinutes = totalMinutes % 60;
-            
-            document.getElementById('totalTime').textContent = `Gesamt: ${totalHours}h ${remainingMinutes}m`;
-        }
 
-        // Data management functions
-        function exportData() {
-            const encryptionKey = localStorage.getItem('encryptionKey');
-            if (!encryptionKey) {
-                showMessage('Anmeldung erforderlich zum Exportieren!', 'error');
-                return;
-            }
-            const encryptedRecords = localStorage.getItem('timeRecords');
-            if (encryptedRecords) {
-                const blob = new Blob([encryptedRecords], { type: 'text/plain' });
-                const a = document.createElement('a');
-                a.href = URL.createObjectURL(blob);
-                a.download = `zeiterfassung_backup_${new Date().toISOString().slice(0, 10)}.txt`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                showMessage('Daten exportiert!', 'success');
-            } else {
-                showMessage('Keine Daten zum Exportieren vorhanden.', 'warning');
-            }
-        }
-        
-        function importData(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+            // "Kommen" Button
+            kommenBtn.addEventListener('click', () => {
+                const pin = userPinInput.value;
+                if (pin.length === 4 && pinToName[pin]) {
+                    saveHistory(pin, 'Kommen');
+                    logStatus.textContent = `Erfolgreich eingestempelt für ${pinToName[pin]}.`;
+                    logStatus.style.color = '#28a745';
+                    userPinInput.value = '';
+                } else {
+                    logStatus.textContent = 'Ungültiger oder unbekannter PIN.';
+                    logStatus.style.color = '#dc3545';
+                }
+            });
 
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const encryptedContent = e.target.result;
-                const encryptionKey = localStorage.getItem('encryptionKey');
-                
-                if (!encryptionKey) {
-                    showMessage('Anmeldung erforderlich zum Importieren!', 'error');
+            // "Gehen" Button
+            gehenBtn.addEventListener('click', () => {
+                const pin = userPinInput.value;
+                if (pin.length === 4 && pinToName[pin]) {
+                    saveHistory(pin, 'Gehen');
+                    logStatus.textContent = `Erfolgreich ausgestempelt für ${pinToName[pin]}.`;
+                    logStatus.style.color = '#dc3545';
+                    userPinInput.value = '';
+                } else {
+                    logStatus.textContent = 'Ungültiger oder unbekannter PIN.';
+                    logStatus.style.color = '#dc3545';
+                }
+            });
+
+            // Abmelden
+            logoutBtn.addEventListener('click', () => {
+                mainSection.style.display = 'none';
+                loginSection.style.display = 'block';
+                websitePasswordInput.value = '';
+                loginStatus.textContent = '';
+                logStatus.textContent = '';
+                userPinInput.value = '';
+            });
+
+            // CSV Export
+            exportBtn.addEventListener('click', () => {
+                const history = JSON.parse(localStorage.getItem('timeLogHistory')) || [];
+                if (history.length === 0) {
+                    alert('Keine Daten zum Exportieren vorhanden.');
                     return;
                 }
-                
-                const newRecordsJson = xorDecrypt(encryptedContent, encryptionKey);
-                if (!newRecordsJson) {
-                    showMessage('Import fehlgeschlagen! Falsche Datei oder falsches Passwort!', 'error');
-                    return;
-                }
-                
-                try {
-                    const newRecords = JSON.parse(newRecordsJson);
-                    if (!Array.isArray(newRecords)) {
-                        throw new Error('Invalid data format');
-                    }
-                    
-                    const confirmImport = confirm(`Möchten Sie ${newRecords.length} neue Einträge importieren? Dies überschreibt alle aktuellen Daten!`);
-                    if (confirmImport) {
-                        timeRecords = newRecords;
-                        updateRecordsTable();
-                        saveToLocalStorage();
-                        showMessage(`${newRecords.length} verschlüsselte Einträge importiert!`, 'success');
-                        return true;
-                    }
-                } catch (e) {
-                    showMessage('Import fehlgeschlagen! Datenformat ungültig.', 'error');
-                }
-            };
-            reader.readAsText(file);
-        }
-        
-        function clearData() {
-            if (confirm('Sind Sie sicher, dass Sie alle Zeiterfassungsdaten löschen möchten? Dieser Schritt kann nicht rückgängig gemacht werden!')) {
-                timeRecords = [];
-                localStorage.removeItem('timeRecords');
-                updateRecordsTable();
-                calculateTotalTime();
-                showMessage('Alle Daten gelöscht!', 'success');
-            }
-        }
-        
-        function deleteRecord(id) {
-            if (confirm('Sind Sie sicher, dass Sie diesen Eintrag löschen möchten?')) {
-                timeRecords = timeRecords.filter(record => record.id !== id);
-                saveToLocalStorage();
-                updateRecordsTable();
-                calculateTotalTime();
-                showMessage('Eintrag gelöscht!', 'success');
-            }
-        }
-        
-        function editRecord(id) {
-            const record = timeRecords.find(r => r.id === id);
-            if (record) {
-                const newProject = prompt('Projekt bearbeiten:', record.project);
-                const newNotes = prompt('Notizen bearbeiten:', record.notes);
-                
-                if (newProject !== null && newNotes !== null) {
-                    record.project = newProject;
-                    record.notes = newNotes;
-                    saveToLocalStorage();
-                    updateRecordsTable();
-                    showMessage('Eintrag aktualisiert!', 'success');
-                }
-            }
-        }
-        
-        // Helper functions
-        function updateDateTime() {
-            const now = new Date();
-            const dateStr = now.toLocaleDateString('de-DE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-            const timeStr = now.toLocaleTimeString('de-DE');
-            document.getElementById('currentDate').textContent = dateStr;
-            document.getElementById('currentTime').textContent = timeStr;
-        }
 
-        // Initialization
-        updateDateTime();
-        setInterval(updateDateTime, 1000);
-        
-        // Beim Laden der Seite
-        window.addEventListener('load', function() {
-            // Warnung bei mehr als 100 Einträgen ohne aktuelles Backup
-            setTimeout(() => {
-                if (timeRecords.length > 100 && (!lastBackupTime || (new Date() - lastBackupTime) > 24 * 60 * 60 * 1000)) {
-                    showBackupStatus('⚠️ Empfehlung: Erstellen Sie ein manuelles Backup Ihrer Daten!', 'warning');
-                }
-            }, 3000);
-        });
+                let csvContent = "data:text/csv;charset=utf-8,";
+                csvContent += "Name,PIN,Aktion,Zeitstempel\n"; // CSV-Header
 
-        // Warnung beim Schließen der App
-        window.addEventListener('beforeunload', function(e) {
-            if (timeRecords.length > 0) {
-                saveToLocalStorage();
-                const message = 'Stellen Sie sicher, dass Sie ein aktuelles Backup haben!';
-                e.returnValue = message;
-                return message;
-            }
+                history.forEach(log => {
+                    const row = `"${log.name}",${log.pin},${log.type},"${log.timestamp}"`;
+                    csvContent += row + "\n";
+                });
+
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", "zeiterfassung.csv");
+                document.body.appendChild(link); 
+                link.click();
+                document.body.removeChild(link);
+            });
         });
     </script>
 </body>
